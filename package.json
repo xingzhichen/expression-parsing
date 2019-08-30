@@ -8,8 +8,7 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack --mode production",
-    "test": "jest --coverage",
-    "dev": "webpack --watch --progress --mode development"
+    "test": "jest --coverage"
   },
   "types": "./dist/index.d.ts",
   "devDependencies": {
