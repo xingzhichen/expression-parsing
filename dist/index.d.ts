@@ -1,23 +1,42 @@
-import { ExpressionParseParams, UnaryOps, BinaryOps, Literals } from "./types";
+import * as T from "./types";
 export default class ExpressionParse {
     static version: string;
     private expression;
     private index;
+    private maxBinaryLen;
+    private maxUnary;
     private binaryOps;
     private unaryOps;
     private literals;
-    constructor({ expression, unaryOps, binaryOps, literals }: ExpressionParseParams);
-    addUnaryOps(ops?: UnaryOps): this;
-    addBinaryOps(ops?: BinaryOps): this;
-    addLiterals(ops?: Literals): this;
+    constructor({ expression, unaryOps, binaryOps, literals }: T.ExpressionParseParams);
+    private getMaxBinaryLen;
+    private getMaxUnaryLen;
+    addBinaryOps(ops?: T.BinaryOps): this;
+    addUnaryOps(ops?: T.UnaryOps): this;
+    addLiterals(ops?: T.LiteralsOps): this;
     removeUnaryOps(ops?: Array<string>): this;
     removeBinaryOps(ops?: Array<string>): this;
     removeLiterals(ops?: Array<string>): this;
-    getUnaryOps(): {
-        [x: string]: number;
-    };
-    getBinaryOps(): string[];
-    getLiterals(): {
-        [x: string]: any;
-    };
+    getUnaryOps(): T.UnaryOps;
+    getBinaryOps(): T.BinaryOps;
+    getLiterals(): T.LiteralsOps;
+    private error;
+    private getCurrentChar;
+    private jumpOverSpace;
+    private isIdentifierStart;
+    private isIdentifierPart;
+    getAst(): any;
+    private parseExpression;
+    private parseBinaryExpression;
+    private parseBinaryOperator;
+    private parseToken;
+    private parseUnary;
+    private parseNumber;
+    private parseString;
+    private parseArguments;
+    private parseArray;
+    private parseVariable;
+    private parseGroup;
+    private parseObject;
+    private parseLiteral;
 }
