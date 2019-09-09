@@ -5,7 +5,7 @@
 // Token-> Unary| Variable|Numeric | String|Array
 // Literal-> true|false|null|undefined |Identifier
 
-// Unary-> UnaryOperator Expression
+// Unary-> UnaryOperator Token
 
 // Numeric-> \d+{('.'|'e'|'E')\d+}
 
@@ -38,9 +38,15 @@ export default class ExpressionParse {
   private index: number = 0;
   private maxBinaryLen: number = 1;
   private maxUnary: number = 1;
-  private binaryOps: T.BinaryOps = D.BINARY_OPS;
-  private unaryOps: T.UnaryObj = D.UNARY_OPS;
-  private literals: T.LiteralsOps = D.LITERALS;
+  private binaryOps: T.BinaryOps = {
+    ...D.BINARY_OPS
+  };
+  private unaryOps: T.UnaryObj = {
+    ...D.UNARY_OPS
+  };
+  private literals: T.LiteralsOps = {
+    ...D.LITERALS
+  };
 
   constructor({
     expression,
@@ -155,6 +161,7 @@ export default class ExpressionParse {
     return char ? /[\$_A-Za-z0-9]/.test(char) : false;
   }
   public getAst() {
+    this.index = 0;
     const result = [this.parseExpression()];
     while (this.index < this.expression.length) {
       this.jumpOverSpace();
@@ -226,8 +233,8 @@ export default class ExpressionParse {
     while ((_opt = this.parseBinaryOperator())) {
       while (
         operatorQueue[operatorQueue.length - 1] &&
-        this.binaryOps[operatorQueue[operatorQueue.length - 1]!.operator] >=
-          this.binaryOps[_opt!.operator]
+        this.binaryOps[operatorQueue[operatorQueue.length - 1]!.value] >=
+          this.binaryOps[_opt!.value]
       ) {
         setToken();
       }
@@ -252,7 +259,7 @@ export default class ExpressionParse {
         this.index += max;
         return {
           type: D.BINARY_OPERATOR,
-          operator: str,
+          value: str,
           start,
           end: this.index
         };
@@ -277,7 +284,7 @@ export default class ExpressionParse {
     }
     return ast;
   }
-  private parseUnary() {
+  private parseUnary(): any {
     let max = this.maxUnary;
     const start = this.index;
     while (max > 0) {
@@ -288,12 +295,16 @@ export default class ExpressionParse {
       if (this.unaryOps.hasOwnProperty(str)) {
         this.index += max;
         const end = this.index;
+        const argument = this.parseToken();
         return {
           type: D.UNARY_EXPRESSION,
-          operate: str,
-          start,
-          end: end,
-          argument: this.parseExpression()
+          operate: {
+            type: D.UNARY_OPERATOR,
+            value: str,
+            start,
+            end: end
+          },
+          argument
         };
       }
       max--;
@@ -313,7 +324,6 @@ export default class ExpressionParse {
     while (this.getCurrentChar() && /^([\de\.])/.test(this.getCurrentChar()!)) {
       number += this.getCurrentChar();
       if (this.getCurrentChar() === D.DOT) {
-        console.log(this.getCurrentChar());
         if (firstDot) {
           this.error();
         }
@@ -325,7 +335,7 @@ export default class ExpressionParse {
       return null;
     }
     if (this.isIdentifierStart(this.getCurrentChar())) {
-      this.error(`Variable cannot  start with number`, start);
+      this.error(`Variable cannot start with number`, start);
     }
     return {
       type: D.LITERAL,
@@ -540,7 +550,3 @@ export default class ExpressionParse {
     return null;
   }
 }
-
-console.log(
-  JSON.stringify(new ExpressionParse({ expression: `fn(1,2)===7` }).getAst())
-);

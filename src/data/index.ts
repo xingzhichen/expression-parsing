@@ -1,7 +1,8 @@
 import { UnaryObj, BinaryOps, LiteralsOps } from "../types";
 export const UNARY_OPS: UnaryObj = {
   "!": true,
-  "-": true
+  "-": true,
+  "+": true
 };
 
 export const BINARY_OPS: BinaryOps = {
@@ -50,6 +51,7 @@ export const CONDITIONAL_EXPRESSION = "ConditionalExpression";
 export const UNARY_EXPRESSION = "UnaryExpression";
 export const BINARY_EXPRESSION = "BinaryExpression";
 export const BINARY_OPERATOR = "BinaryOperator";
+export const UNARY_OPERATOR = "UnaryOperator";
 export const LITERAL = "Literal";
 export const IDENTIFIER = "Identifier";
 export const ARRAY_EXPRESSION = "ArrayExpression";
