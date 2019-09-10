@@ -32,7 +32,7 @@ import * as D from "./data";
 import * as U from "./utils";
 import { AstType as AS } from "./types/ast";
 
-export default class ExpressionParse {
+export class ExpressionParse {
   static version: string = "1.0.0";
   private expression: string = "";
   private index: number = 0;
@@ -160,7 +160,7 @@ export default class ExpressionParse {
   private isIdentifierPart(char: string | undefined): boolean {
     return char ? /[\$_A-Za-z0-9]/.test(char) : false;
   }
-  public getAst() {
+  public getAst(): AS.Expression | Array<AS.Expression> {
     this.index = 0;
     const result = [this.parseExpression()];
     while (this.index < this.expression.length) {
@@ -173,15 +173,17 @@ export default class ExpressionParse {
     }
     return result.length > 1 ? result : result[0];
   }
-  private parseExpression(): any {
+  private parseExpression(): AS.Expression {
     if (!this.expression) {
       return null;
     }
-    const binaryExpression = this.parseBinaryExpression();
+    const expression:
+      | AS.BinaryExpression
+      | AS.Token = this.parseBinaryExpression();
     this.jumpOverSpace();
     if (this.getCurrentChar() === D.QUESTION) {
       this.index++;
-      const consequent = this.parseExpression();
+      const consequent: AS.Expression = this.parseExpression();
       if (!consequent) {
         this.error(`Expected Expression`);
       }
@@ -189,34 +191,34 @@ export default class ExpressionParse {
         this.error(`Expected ${D.COLON}`);
       }
       this.index++;
-      const alternate = this.parseExpression();
+      const alternate: AS.Expression = this.parseExpression();
       if (!alternate) {
         this.error(`Expected Expression`);
       }
       const ast = {
         type: D.CONDITIONAL_EXPRESSION,
-        test: binaryExpression,
+        test: expression,
         consequent,
         alternate
       };
       return ast;
     }
-    return binaryExpression;
+    return expression;
   }
-  private parseBinaryExpression() {
-    const left = this.parseToken();
-    const operator = this.parseBinaryOperator();
+  private parseBinaryExpression(): AS.BinaryExpression | AS.Token {
+    const left: AS.Token = this.parseToken();
+    const operator: AS.BinaryOperator = this.parseBinaryOperator();
     if (!operator) {
       return left;
     }
-    const right = this.parseToken();
+    const right: AS.Token = this.parseToken();
     if (operator && !right) {
       this.error();
     }
     //operate priority
 
-    const tokenQueue: any = [left, right];
-    const operatorQueue = [operator];
+    const tokenQueue: (AS.Token | AS.BinaryExpression)[] = [left, right];
+    const operatorQueue: AS.BinaryOperator[] = [operator];
     const setToken = () => {
       let op = operatorQueue.pop()!;
       const right = tokenQueue.pop()!;
@@ -229,7 +231,7 @@ export default class ExpressionParse {
       };
       tokenQueue.push(node);
     };
-    let _opt = null;
+    let _opt: AS.BinaryOperator = null;
     while ((_opt = this.parseBinaryOperator())) {
       while (
         operatorQueue[operatorQueue.length - 1] &&
@@ -246,7 +248,7 @@ export default class ExpressionParse {
     }
     return tokenQueue[0];
   }
-  private parseBinaryOperator() {
+  private parseBinaryOperator(): AS.BinaryOperator {
     this.jumpOverSpace();
     let max = this.maxBinaryLen;
     const start = this.index;
@@ -266,10 +268,11 @@ export default class ExpressionParse {
       }
       max--;
     }
+    return null;
   }
-  private parseToken() {
+  private parseToken(): AS.Token {
     this.jumpOverSpace();
-    const char = this.getCurrentChar();
+    const char: string | undefined = this.getCurrentChar();
     if (!char) {
       return null;
     }
@@ -284,7 +287,7 @@ export default class ExpressionParse {
     }
     return ast;
   }
-  private parseUnary(): any {
+  private parseUnary(): AS.UnaryExpression {
     let max = this.maxUnary;
     const start = this.index;
     while (max > 0) {
@@ -295,7 +298,7 @@ export default class ExpressionParse {
       if (this.unaryOps.hasOwnProperty(str)) {
         this.index += max;
         const end = this.index;
-        const argument = this.parseToken();
+        const argument: AS.Token = this.parseToken();
         return {
           type: D.UNARY_EXPRESSION,
           operate: {
@@ -311,7 +314,7 @@ export default class ExpressionParse {
     }
     return null;
   }
-  private parseNumber() {
+  private parseNumber(): AS.Number {
     let number = "";
     let start = this.index;
     let firstDot = false;
@@ -345,7 +348,7 @@ export default class ExpressionParse {
       raw: number
     };
   }
-  private parseString() {
+  private parseString(): AS.String {
     let str = "",
       closed = false;
     let quote = this.getCurrentChar();
@@ -401,7 +404,7 @@ export default class ExpressionParse {
       raw: `${quote}${str}${quote}`
     };
   }
-  private parseArguments() {
+  private parseArguments(): AS.Arguments {
     const args = [];
     while (this.index < this.expression.length) {
       this.jumpOverSpace();
@@ -410,7 +413,7 @@ export default class ExpressionParse {
       const comma = this.getCurrentChar();
       if (comma === D.RIGHT_BRACKET || comma === D.RIGHT_PAREN) {
         args.push(arg);
-        return args;
+        break;
       }
       if (comma === D.COMMA) {
         if (arg) {
@@ -419,12 +422,12 @@ export default class ExpressionParse {
       }
       this.index++;
     }
-    this.error();
+    return args;
   }
-  private parseArray() {
+  private parseArray(): AS.Arr {
     if (this.getCurrentChar() === D.LEFT_BRACKET) {
       this.index++;
-      const arg = this.parseArguments();
+      const arg: AS.Arguments = this.parseArguments();
       this.jumpOverSpace();
       if (this.getCurrentChar() === D.RIGHT_BRACKET) {
         this.index++;
@@ -439,14 +442,14 @@ export default class ExpressionParse {
     return null;
   }
 
-  private parseVariable() {
+  private parseVariable(): AS.Variable {
     return this.parseGroup() || this.parseObject();
   }
-  private parseGroup() {
+  private parseGroup(): AS.Expression {
     if (this.getCurrentChar() === D.LEFT_PAREN) {
       this.index++;
       this.jumpOverSpace();
-      const expression = this.parseExpression();
+      const expression: AS.Expression = this.parseExpression();
       this.jumpOverSpace();
       if (this.getCurrentChar() === D.RIGHT_PAREN) {
         this.index++;
@@ -457,15 +460,15 @@ export default class ExpressionParse {
     }
     return null;
   }
-  private parseObject() {
-    let obj: any = this.parseLiteral();
+  private parseObject(): AS.Object {
+    let obj: AS.Object = this.parseLiteral();
     if (!obj) {
       return null;
     }
     if (this.getCurrentChar() === D.LEFT_PAREN) {
       this.index++;
       this.jumpOverSpace();
-      const args = this.parseArguments();
+      const args: AS.Arguments = this.parseArguments();
       this.jumpOverSpace();
       if (this.getCurrentChar() === D.RIGHT_PAREN) {
         this.index++;
@@ -490,7 +493,7 @@ export default class ExpressionParse {
     ) {
       if (this.getCurrentChar() === D.DOT) {
         this.index++;
-        const property = this.parseLiteral();
+        const property: AS.Literal = this.parseLiteral();
         obj = {
           type: D.MEMBER_EXPRESSION,
           computed: false,
@@ -499,7 +502,7 @@ export default class ExpressionParse {
         };
       } else if (this.getCurrentChar() === D.LEFT_BRACKET) {
         this.index++;
-        const property = this.parseExpression();
+        const property: AS.Expression = this.parseExpression();
         this.jumpOverSpace();
         if (this.getCurrentChar() === D.RIGHT_BRACKET) {
           this.index++;
@@ -517,7 +520,7 @@ export default class ExpressionParse {
     return obj;
   }
 
-  private parseLiteral() {
+  private parseLiteral(): AS.Literal {
     this.jumpOverSpace();
     let start = this.index;
     let str = this.getCurrentChar();

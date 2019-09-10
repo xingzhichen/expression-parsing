@@ -1,62 +1,81 @@
 export module AstType {
-  interface Base {
-    type: string;
-    start: number;
-    end: number;
-  }
-  type Expression = BinaryExpression | TernaryExpression | Token | null;
-  type TernaryExpression = {
+  type Expression = any;
+  type ConditionalExpression = {
     type: string;
     test: BinaryExpression | Token;
     consequent: Expression;
     alternate: Expression;
   };
-
-  type BinaryExpression =
-    | Token
-    | {
-        type: string;
-        left: Token;
-        operator: BinaryOperator;
-        right: Token;
-      };
-  type Token = Unary | Literal | Array | Variable | null;
-  type Unary = {
+  type BinaryExpression = {
     type: string;
-    value: number | string;
-    raw: number | string;
-    operator: UnaryOperator;
+    left: Token | BinaryExpression;
+    right: Token | BinaryExpression;
+    operator: BinaryOperator;
   } | null;
-  type Literal = String | Number;
-  interface String extends Base {
-    value: number;
-    raw: string;
-  }
-  interface Number extends Base {
-    value: number;
-    raw: string;
-  }
-  interface Identifier extends Base {
-    name: string;
-  }
-  type Arguments = {
+  type Token = UnaryExpression | Variable | Number | String | Arr | null;
+  type BinaryOperator = {
     type: string;
-    elements: Expression[];
-  };
-  type Array = Arguments;
-  type Variable =
-    | Identifier
+    value: string;
+    start: number;
+    end: number;
+  } | null;
+  type UnaryExpression = {
+    type: string;
+    operate: {
+      type: string;
+      value: string;
+      start: number;
+      end: number;
+    };
+    argument: Token;
+  } | null;
+  type Variable = Object | Expression | null;
+  type Number = {
+    type: string;
+    value: number;
+    start: number;
+    end: number;
+    raw: string;
+  } | null;
+  type String = {
+    type: string;
+    value: string;
+    start: number;
+    end: number;
+    raw: string;
+  } | null;
+  type Arguments = Array<Expression>;
+  type Arr = {
+    type: string;
+    arguments: Arguments;
+  } | null;
+  type Object =
     | {
         type: string;
         computed: boolean;
-        object: Identifier;
-        property: Expression;
+        object: Object | Literal;
+        property: Literal | Expression;
       }
-    | { type: string; callee: Identifier; arguments: Arguments };
-  interface BinaryOperator extends Base {
-    operator: string;
-  }
-  interface UnaryOperator extends Base {
-    operator: string;
-  }
+    | Function
+    | Literal
+    | null;
+  type Function = {
+    type: string;
+    callee: Literal;
+    arguments: Arguments;
+  } | null;
+  type Literal =
+    | {
+        type: string;
+        start: number;
+        end: number;
+      } & (
+        | {
+            value: string;
+            raw: string;
+          }
+        | {
+            name?: string;
+          })
+    | null;
 }

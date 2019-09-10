@@ -7,10 +7,10 @@
   "author": "xingzhichen <xingzhichenshuai@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "jest --coverage&&webpack --mode production",
     "test": "jest --coverage"
   },
-  "types": "./dist/index.d.ts",
+  "types": "index.d.ts",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
