@@ -1,5 +1,5 @@
 {
-  "name": "expression-parsing",
+  "name": "simple-expression-parsing",
   "version": "1.0.0",
   "description": "a javascript library that parses expressions",
   "main": "dist/index.js",
