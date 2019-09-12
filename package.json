@@ -1,14 +1,15 @@
 {
   "name": "simple-expression-parsing",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "a javascript library that parses expressions",
   "main": "dist/index.js",
   "repository": "https://github.com/xingzhichen/expression-parsing.git",
   "author": "xingzhichen <xingzhichenshuai@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "jest --coverage&&webpack --mode production",
-    "test": "jest --coverage"
+    "build": "npm run test&&webpack --mode production",
+    "test": "jest --coverage",
+    "cover": "npm run test&&cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "types": "index.d.ts",
   "devDependencies": {
@@ -19,6 +20,7 @@
     "@types/jest": "^24.0.18",
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^3.0.0",
+    "coveralls": "^3.0.6",
     "jest": "^24.9.0",
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.4",
