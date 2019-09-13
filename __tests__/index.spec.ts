@@ -109,75 +109,134 @@ test("delete unaryOps,binaryOps,literals, catch error", () => {
     instance.getAst();
   }).toThrow();
 });
-test("test ternary expression", () => {
-  const instance = new ExpressionParse({
-    expression: "a?b:c"
-  });
-  const expectAst = {
-    type: D.CONDITIONAL_EXPRESSION,
-    test: { type: D.IDENTIFIER, start: 0, end: 1, name: "a" },
-    consequent: { type: D.IDENTIFIER, start: 2, end: 3, name: "b" },
-    alternate: { type: D.IDENTIFIER, start: 4, end: 5, name: "c" }
-  };
-  expect(instance.getAst()).toEqual(expectAst);
-});
-test("test function", () => {
-  const instance = new ExpressionParse({
-    expression: "isEmpty(a,b,c)?true:false"
-  });
-  const expectAst = {
-    type: D.CONDITIONAL_EXPRESSION,
-    test: {
-      type: D.CALL_EXPRESSION,
-      callee: {
-        type: D.IDENTIFIER,
-        start: 0,
-        end: 7,
-        name: "isEmpty"
-      },
-      arguments: [
-        {
-          type: D.IDENTIFIER,
-          start: 8,
-          end: 9,
-          name: "a"
-        },
-        {
-          type: D.IDENTIFIER,
-          start: 10,
-          end: 11,
-          name: "b"
-        },
-        {
-          type: D.IDENTIFIER,
-          start: 12,
-          end: 13,
-          name: "c"
-        }
-      ]
-    },
-    consequent: {
-      type: D.LITERAL,
-      start: 15,
-      end: 19,
-      value: true,
-      raw: "true"
-    },
-    alternate: {
-      type: D.LITERAL,
-      start: 20,
-      end: 25,
-      value: false,
-      raw: "false"
-    }
-  };
-  expect(instance.getAst()).toEqual(expectAst);
-});
 
+describe("test decimal point", () => {
+  test("Correct decimal point  ", () => {
+    const instance = new ExpressionParse({
+      expression: ".6+2.7"
+    });
+    const expectAst = {
+      type: "BinaryExpression",
+      left: { type: "Literal", value: 0.6, start: 0, end: 2, raw: ".6" },
+      operator: { type: "BinaryOperator", value: "+", start: 2, end: 3 },
+      right: { type: "Literal", value: 2.7, start: 3, end: 6, raw: "2.7" }
+    };
+    expect(instance.getAst()).toEqual(expectAst);
+  });
+  test("Wrong decimal point  ", () => {
+    const instance = new ExpressionParse({
+      expression: ".6.5+3.1b"
+    });
+    expect(() => {
+      instance.getAst();
+    }).toThrow();
+  });
+});
+test("empty expression", () => {
+  const instance = new ExpressionParse({
+    expression: ""
+  });
+  expect(instance.getAst()).toBeNull;
+});
+test("Binary expression parsing error", () => {
+  const instance = new ExpressionParse({
+    expression: "a+"
+  });
+  expect(() => {
+    instance.getAst();
+  }).toThrow();
+});
+describe("test ternary expression", () => {
+  test("normal ternary expression", () => {
+    const instance = new ExpressionParse({
+      expression: "a?b:c"
+    });
+    const expectAst = {
+      type: D.CONDITIONAL_EXPRESSION,
+      test: { type: D.IDENTIFIER, start: 0, end: 1, name: "a" },
+      consequent: { type: D.IDENTIFIER, start: 2, end: 3, name: "b" },
+      alternate: { type: D.IDENTIFIER, start: 4, end: 5, name: "c" }
+    };
+    expect(instance.getAst()).toEqual(expectAst);
+  });
+  test("missing consequent", () => {
+    const instance = new ExpressionParse({
+      expression: "a?b:"
+    });
+    expect(() => {
+      instance.getAst();
+    }).toThrow();
+  });
+  test("missing symbol", () => {
+    const instance = new ExpressionParse({
+      expression: "a?b"
+    });
+    expect(() => {
+      instance.getAst();
+    }).toThrow();
+  });
+  test("missing alternate", () => {
+    const instance = new ExpressionParse({
+      expression: "a?"
+    });
+    expect(() => {
+      instance.getAst();
+    }).toThrow();
+  });
+});
+test("Test multiple expressions", () => {
+  const instance = new ExpressionParse({
+    expression: "a+b;c?a:b"
+  });
+  const expectAst = [
+    {
+      type: "BinaryExpression",
+      left: {
+        type: "Identifier",
+        start: 0,
+        end: 1,
+        name: "a"
+      },
+      operator: {
+        type: "BinaryOperator",
+        value: "+",
+        start: 1,
+        end: 2
+      },
+      right: {
+        type: "Identifier",
+        start: 2,
+        end: 3,
+        name: "b"
+      }
+    },
+    {
+      type: "ConditionalExpression",
+      test: {
+        type: "Identifier",
+        start: 4,
+        end: 5,
+        name: "c"
+      },
+      consequent: {
+        type: "Identifier",
+        start: 6,
+        end: 7,
+        name: "a"
+      },
+      alternate: {
+        type: "Identifier",
+        start: 8,
+        end: 9,
+        name: "b"
+      }
+    }
+  ];
+  expect(instance.getAst()).toEqual(expectAst);
+});
 test("test complex expression", () => {
   const instance = new ExpressionParse({
-    expression:
-      "fn(a@@@b,c@@d,e)?this:isEmpty('2')?this:(@#$1+2*3@@@##4)||(-1&&g===j)"
+    expression: `fn(a@@@b,c@@d,e)?this:isEmpty('2')?this:(@#$1+2*3@@@##4)||(-1&&g===j)||'a\n\r\t\b\f'||[a.b,a[c],a.c.d]`
   });
   const ast = instance
     .addBinaryOps({
@@ -191,60 +250,60 @@ test("test complex expression", () => {
     })
     .getAst();
   const expectAst = {
-    type: D.CONDITIONAL_EXPRESSION,
+    type: "ConditionalExpression",
     test: {
-      type: D.CALL_EXPRESSION,
+      type: "CallExpression",
       callee: {
-        type: D.IDENTIFIER,
+        type: "Identifier",
         start: 0,
         end: 2,
         name: "fn"
       },
       arguments: [
         {
-          type: D.BINARY_EXPRESSION,
+          type: "BinaryExpression",
           left: {
-            type: D.IDENTIFIER,
+            type: "Identifier",
             start: 3,
             end: 4,
             name: "a"
           },
           operator: {
-            type: D.BINARY_OPERATOR,
+            type: "BinaryOperator",
             value: "@@@",
             start: 4,
             end: 7
           },
           right: {
-            type: D.IDENTIFIER,
+            type: "Identifier",
             start: 7,
             end: 8,
             name: "b"
           }
         },
         {
-          type: D.BINARY_EXPRESSION,
+          type: "BinaryExpression",
           left: {
-            type: D.IDENTIFIER,
+            type: "Identifier",
             start: 9,
             end: 10,
             name: "c"
           },
           operator: {
-            type: D.BINARY_OPERATOR,
+            type: "BinaryOperator",
             value: "@@",
             start: 10,
             end: 12
           },
           right: {
-            type: D.IDENTIFIER,
+            type: "Identifier",
             start: 12,
             end: 13,
             name: "d"
           }
         },
         {
-          type: D.IDENTIFIER,
+          type: "Identifier",
           start: 14,
           end: 15,
           name: "e"
@@ -252,25 +311,25 @@ test("test complex expression", () => {
       ]
     },
     consequent: {
-      type: D.LITERAL,
+      type: "Literal",
       start: 17,
       end: 21,
       value: "that",
       raw: "this"
     },
     alternate: {
-      type: D.CONDITIONAL_EXPRESSION,
+      type: "ConditionalExpression",
       test: {
-        type: D.CALL_EXPRESSION,
+        type: "CallExpression",
         callee: {
-          type: D.IDENTIFIER,
+          type: "Identifier",
           start: 22,
           end: 29,
           name: "isEmpty"
         },
         arguments: [
           {
-            type: D.LITERAL,
+            type: "Literal",
             value: "2",
             start: 30,
             end: 33,
@@ -279,138 +338,226 @@ test("test complex expression", () => {
         ]
       },
       consequent: {
-        type: D.LITERAL,
+        type: "Literal",
         start: 35,
         end: 39,
         value: "that",
         raw: "this"
       },
       alternate: {
-        type: D.BINARY_EXPRESSION,
+        type: "BinaryExpression",
         left: {
-          type: D.BINARY_EXPRESSION,
+          type: "BinaryExpression",
           left: {
-            type: D.BINARY_EXPRESSION,
+            type: "BinaryExpression",
             left: {
-              type: D.UNARY_EXPRESSION,
-              operate: {
-                type: D.UNARY_OPERATOR,
-                value: "@#$",
-                start: 41,
-                end: 44
+              type: "BinaryExpression",
+              left: {
+                type: "BinaryExpression",
+                left: {
+                  type: "UnaryExpression",
+                  operate: {
+                    type: "UnaryOperator",
+                    value: "@#$",
+                    start: 41,
+                    end: 44
+                  },
+                  argument: {
+                    type: "Literal",
+                    value: 1,
+                    start: 44,
+                    end: 45,
+                    raw: "1"
+                  }
+                },
+                operator: {
+                  type: "BinaryOperator",
+                  value: "+",
+                  start: 45,
+                  end: 46
+                },
+                right: {
+                  type: "BinaryExpression",
+                  left: {
+                    type: "Literal",
+                    value: 2,
+                    start: 46,
+                    end: 47,
+                    raw: "2"
+                  },
+                  operator: {
+                    type: "BinaryOperator",
+                    value: "*",
+                    start: 47,
+                    end: 48
+                  },
+                  right: {
+                    type: "Literal",
+                    value: 3,
+                    start: 48,
+                    end: 49,
+                    raw: "3"
+                  }
+                }
               },
-              argument: {
-                type: D.LITERAL,
-                value: 1,
-                start: 44,
-                end: 45,
-                raw: "1"
+              operator: {
+                type: "BinaryOperator",
+                value: "@@@",
+                start: 49,
+                end: 52
+              },
+              right: {
+                type: "UnaryExpression",
+                operate: {
+                  type: "UnaryOperator",
+                  value: "##",
+                  start: 52,
+                  end: 54
+                },
+                argument: {
+                  type: "Literal",
+                  value: 4,
+                  start: 54,
+                  end: 55,
+                  raw: "4"
+                }
               }
             },
             operator: {
-              type: D.BINARY_OPERATOR,
-              value: "+",
-              start: 45,
-              end: 46
+              type: "BinaryOperator",
+              value: "||",
+              start: 56,
+              end: 58
             },
             right: {
-              type: D.BINARY_EXPRESSION,
+              type: "BinaryExpression",
               left: {
-                type: D.LITERAL,
-                value: 2,
-                start: 46,
-                end: 47,
-                raw: "2"
+                type: "UnaryExpression",
+                operate: {
+                  type: "UnaryOperator",
+                  value: "-",
+                  start: 59,
+                  end: 60
+                },
+                argument: {
+                  type: "Literal",
+                  value: 1,
+                  start: 60,
+                  end: 61,
+                  raw: "1"
+                }
               },
               operator: {
-                type: D.BINARY_OPERATOR,
-                value: "*",
-                start: 47,
-                end: 48
+                type: "BinaryOperator",
+                value: "&&",
+                start: 61,
+                end: 63
               },
               right: {
-                type: D.LITERAL,
-                value: 3,
-                start: 48,
-                end: 49,
-                raw: "3"
+                type: "BinaryExpression",
+                left: {
+                  type: "Identifier",
+                  start: 63,
+                  end: 64,
+                  name: "g"
+                },
+                operator: {
+                  type: "BinaryOperator",
+                  value: "===",
+                  start: 64,
+                  end: 67
+                },
+                right: {
+                  type: "Identifier",
+                  start: 67,
+                  end: 68,
+                  name: "j"
+                }
               }
             }
           },
           operator: {
-            type: D.BINARY_OPERATOR,
-            value: "@@@",
-            start: 49,
-            end: 52
+            type: "BinaryOperator",
+            value: "||",
+            start: 69,
+            end: 71
           },
           right: {
-            type: D.UNARY_EXPRESSION,
-            operate: {
-              type: D.UNARY_OPERATOR,
-              value: "##",
-              start: 52,
-              end: 54
-            },
-            argument: {
-              type: D.LITERAL,
-              value: 4,
-              start: 54,
-              end: 55,
-              raw: "4"
-            }
+            type: "Literal",
+            value: "a\n\r\t\b\f",
+            start: 71,
+            end: 79,
+            raw: "'a\n\r\t\b\f'"
           }
         },
         operator: {
-          type: D.BINARY_OPERATOR,
+          type: "BinaryOperator",
           value: "||",
-          start: 56,
-          end: 58
+          start: 79,
+          end: 81
         },
         right: {
-          type: D.BINARY_EXPRESSION,
-          left: {
-            type: D.UNARY_EXPRESSION,
-            operate: {
-              type: D.UNARY_OPERATOR,
-              value: "-",
-              start: 59,
-              end: 60
+          type: "ArrayExpression",
+          arguments: [
+            {
+              type: "MemberExpression",
+              computed: false,
+              object: {
+                type: "Identifier",
+                start: 82,
+                end: 83,
+                name: "a"
+              },
+              property: {
+                type: "Identifier",
+                start: 84,
+                end: 85,
+                name: "b"
+              }
             },
-            argument: {
-              type: D.LITERAL,
-              value: 1,
-              start: 60,
-              end: 61,
-              raw: "1"
+            {
+              type: "MemberExpression",
+              computed: true,
+              object: {
+                type: "Identifier",
+                start: 86,
+                end: 87,
+                name: "a"
+              },
+              property: {
+                type: "Identifier",
+                start: 88,
+                end: 89,
+                name: "c"
+              }
+            },
+            {
+              type: "MemberExpression",
+              computed: false,
+              object: {
+                type: "MemberExpression",
+                computed: false,
+                object: {
+                  type: "Identifier",
+                  start: 91,
+                  end: 92,
+                  name: "a"
+                },
+                property: {
+                  type: "Identifier",
+                  start: 93,
+                  end: 94,
+                  name: "c"
+                }
+              },
+              property: {
+                type: "Identifier",
+                start: 95,
+                end: 96,
+                name: "d"
+              }
             }
-          },
-          operator: {
-            type: D.BINARY_OPERATOR,
-            value: "&&",
-            start: 61,
-            end: 63
-          },
-          right: {
-            type: D.BINARY_EXPRESSION,
-            left: {
-              type: D.IDENTIFIER,
-              start: 63,
-              end: 64,
-              name: "g"
-            },
-            operator: {
-              type: D.BINARY_OPERATOR,
-              value: "===",
-              start: 64,
-              end: 67
-            },
-            right: {
-              type: D.IDENTIFIER,
-              start: 67,
-              end: 68,
-              name: "j"
-            }
-          }
+          ]
         }
       }
     }
