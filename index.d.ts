@@ -1,6 +1,5 @@
 import * as T from "./src/types";
 import { AstType as AS } from "./src/types/ast";
-import { AST } from "handlebars";
 export class ExpressionParse {
   static version: string;
   constructor({
