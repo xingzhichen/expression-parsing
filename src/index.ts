@@ -27,12 +27,12 @@
 
 // UnaryOperator-> - | + | !  //and many more...
 
-import * as T from "./types";
-import * as D from "./data";
+import * as T from "./types/index";
+import * as D from "./data/index";
 import { AstType as AS } from "./types/ast";
 import Operator from "./operator";
 export class ExpressionParse extends Operator {
-  static version: string = "1.0.1";
+  static version: string = "1.0.2";
   private expression: string = "";
   private index: number = 0;
   constructor(args: T.ExpressionParseParams) {

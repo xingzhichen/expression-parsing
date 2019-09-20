@@ -1,6 +1,6 @@
 import * as U from "./utils";
-import * as T from "./types";
-import * as D from "./data";
+import * as T from "./types/index";
+import * as D from "./data/index";
 
 export default class Operator {
   constructor({
