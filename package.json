@@ -1,6 +1,6 @@
 {
   "name": "simple-expression-parsing",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "a javascript library that parses expressions",
   "main": "dist/index.js",
   "repository": "https://github.com/xingzhichen/expression-parsing.git",

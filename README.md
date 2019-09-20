@@ -3,7 +3,7 @@
 [![NPM version](https://img.shields.io/npm/v/simple-expression-parsing)](https://www.npmjs.com/package/simple-expression-parsing)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](http://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/xingzhichen/expression-parsing.svg?branch=dev)](https://travis-ci.org/xingzhichen/expression-parsing)
-[![Coverage Status](https://coveralls.io/repos/github/xingzhichen/expression-parsing/badge.png?branch=dev)](https://coveralls.io/github/xingzhichen/expression-parsing?branch=dev)
+[![Coverage Status](https://coveralls.io/repos/github/xingzhichen/expression-parsing/badge.svg?branch=dev)](https://coveralls.io/github/xingzhichen/expression-parsing?branch=dev)
 
 # simple-expression-parsing
 

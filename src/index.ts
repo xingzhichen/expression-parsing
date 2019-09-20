@@ -29,111 +29,18 @@
 
 import * as T from "./types";
 import * as D from "./data";
-import * as U from "./utils";
 import { AstType as AS } from "./types/ast";
-
-export class ExpressionParse {
-  static version: string = "1.0.0";
+import Operator from "./operator";
+export class ExpressionParse extends Operator {
+  static version: string = "1.0.1";
   private expression: string = "";
   private index: number = 0;
-  private maxBinaryLen: number = 1;
-  private maxUnary: number = 1;
-  private binaryOps: T.BinaryOps = {
-    ...D.BINARY_OPS
-  };
-  private unaryOps: T.UnaryObj = {
-    ...D.UNARY_OPS
-  };
-  private literals: T.LiteralsOps = {
-    ...D.LITERALS
-  };
-
-  constructor({
-    expression,
-    unaryOps,
-    binaryOps,
-    literals
-  }: T.ExpressionParseParams) {
+  constructor(args: T.ExpressionParseParams) {
+    super(args);
+    const { expression } = args;
     this.expression = expression;
-    if (binaryOps && Object.keys(binaryOps).length) {
-      this.binaryOps = {
-        ...binaryOps
-      };
-    }
-    if (unaryOps && unaryOps.length) {
-      this.unaryOps = {
-        ...U.transFormArrToObj(unaryOps)
-      };
-    }
-    if (literals && Object.keys(literals).length) {
-      this.literals = {
-        ...literals
-      };
-    }
-    this.maxBinaryLen = this.getMaxBinaryLen();
-    this.maxUnary = this.getMaxUnaryLen();
   }
-  private getMaxBinaryLen(): number {
-    return Object.keys(this.binaryOps).reduce((max, op) => {
-      return op.length > max ? op.length : max;
-    }, 1);
-  }
-  private getMaxUnaryLen(): number {
-    return Object.keys(this.unaryOps).reduce((max, op) => {
-      return op.length > max ? op.length : max;
-    }, 1);
-  }
-  public addBinaryOps(ops: T.BinaryOps = {}): this {
-    this.binaryOps = {
-      ...this.binaryOps,
-      ...ops
-    };
-    this.maxBinaryLen = this.getMaxBinaryLen();
-    return this;
-  }
-  public addUnaryOps(ops: T.UnaryOps = []): this {
-    this.unaryOps = {
-      ...this.unaryOps,
-      ...U.transFormArrToObj(ops)
-    };
-    this.maxUnary = this.getMaxUnaryLen();
-    return this;
-  }
-  public addLiterals(ops: T.LiteralsOps = {}): this {
-    this.literals = {
-      ...this.literals,
-      ...ops
-    };
-    return this;
-  }
-  public removeUnaryOps(ops: Array<string> = []): this {
-    U.deleteProperty(this.unaryOps, ops);
-    return this;
-  }
-  public removeBinaryOps(ops: Array<string> = []): this {
-    U.deleteProperty(this.binaryOps, ops);
-    this.maxBinaryLen = this.getMaxBinaryLen();
-    return this;
-  }
-  public removeLiterals(ops: Array<string> = []): this {
-    U.deleteProperty(this.literals, ops);
-    this.maxUnary = this.getMaxUnaryLen();
 
-    return this;
-  }
-  public getUnaryOps(): T.UnaryOps {
-    return Object.keys(this.unaryOps);
-  }
-  public getBinaryOps(): T.BinaryOps {
-    return {
-      ...this.binaryOps
-    };
-  }
-  public getLiterals(): T.LiteralsOps {
-    return {
-      ...this.literals
-    };
-  }
   private error(
     msg: string = `Unexpected ${this.getCurrentChar()}`,
     index?: number
