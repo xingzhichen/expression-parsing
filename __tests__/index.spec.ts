@@ -138,6 +138,43 @@ test("empty expression", () => {
   });
   expect(instance.getAst()).toBeNull;
 });
+test("function", () => {
+  const instance = new ExpressionParse({
+    expression: "empty(getxx(),haha())"
+  });
+  const expectAst = {
+    type: "CallExpression",
+    callee: {
+      type: "Identifier",
+      start: 0,
+      end: 5,
+      name: "empty"
+    },
+    arguments: [
+      {
+        type: "CallExpression",
+        callee: {
+          type: "Identifier",
+          start: 6,
+          end: 11,
+          name: "getxx"
+        },
+        arguments: []
+      },
+      {
+        type: "CallExpression",
+        callee: {
+          type: "Identifier",
+          start: 14,
+          end: 18,
+          name: "haha"
+        },
+        arguments: []
+      }
+    ]
+  };
+  expect(instance.getAst()).toEqual(expectAst);
+});
 test("Binary expression parsing error", () => {
   const instance = new ExpressionParse({
     expression: "a+"

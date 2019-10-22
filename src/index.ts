@@ -17,7 +17,7 @@
 
 // Group->'('Expression ')'
 
-// Object->Object'.'Literal' | Variable'['Expression']'|Literal'('Arguments')'|Literal
+// Object->Object'.'Literal| Variable'['Expression']'|Literal'('Arguments|ε')'|Literal
 
 // Identifier->/^[\$_A-Za-z]([\$_A-Za-z0-9]*)/
 
@@ -315,6 +315,10 @@ export class ExpressionParse extends Operator {
     const args = [];
     while (this.index < this.expression.length) {
       this.jumpOverSpace();
+      const _comma = this.getCurrentChar();
+      if (_comma === D.RIGHT_BRACKET || _comma === D.RIGHT_PAREN) {
+        break;
+      }
       const arg = this.parseExpression();
       this.jumpOverSpace();
       const comma = this.getCurrentChar();
