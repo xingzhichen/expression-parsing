@@ -1,6 +1,6 @@
 {
   "name": "simple-expression-parsing",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "a javascript library that parses expressions",
   "main": "dist/index.js",
   "repository": "https://github.com/xingzhichen/expression-parsing.git",
@@ -25,7 +25,6 @@
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.4",
     "typescript": "^3.5.3",
-    "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7"
   }

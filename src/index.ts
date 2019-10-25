@@ -148,7 +148,11 @@ export class ExpressionParse extends Operator {
         setToken();
       }
       operatorQueue.push(_opt);
-      tokenQueue.push(this.parseToken());
+      const token = this.parseToken();
+      if (!token) {
+        this.error();
+      }
+      tokenQueue.push(token);
     }
     while (operatorQueue.length) {
       setToken();

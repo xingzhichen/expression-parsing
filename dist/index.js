@@ -1,1 +1,887 @@
-!function(e,r){if("object"==typeof exports&&"object"==typeof module)module.exports=r();else if("function"==typeof define&&define.amd)define([],r);else{var t=r();for(var n in t)("object"==typeof exports?exports:e)[n]=t[n]}}(window,function(){return n={},i.m=t=[function(e,r,t){"use strict";t.r(r);var s={"!":!0,"-":!0,"+":!0},a={"||":1,"&&":2,"|":3,"^":4,"&":5,"==":6,"!=":6,"===":6,"!==":6,"<":7,">":7,"<=":7,">=":7,"<<":8,">>":8,"+":9,"-":9,"*":10,"/":10,"%":10},u={undefined:void 0,null:null,false:!1,true:!0},i=".",o="[",h="]",p=")",c="Literal",l="MemberExpression";function f(e){return e.reduce(function(e,r){return"string"!=typeof r&&"number"!=typeof r||(e[r]=!0),e},{})}function n(r,e){return e.forEach(function(e){delete r[e]}),Array.isArray(r)?r.filter(function(e){return e}):r}function y(r,e){var t=Object.keys(r);if(Object.getOwnPropertySymbols){var n=Object.getOwnPropertySymbols(r);e&&(n=n.filter(function(e){return Object.getOwnPropertyDescriptor(r,e).enumerable})),t.push.apply(t,n)}return t}function v(r){for(var e=1;e<arguments.length;e++){var t=null!=arguments[e]?arguments[e]:{};e%2?y(t,!0).forEach(function(e){d(r,e,t[e])}):Object.getOwnPropertyDescriptors?Object.defineProperties(r,Object.getOwnPropertyDescriptors(t)):y(t).forEach(function(e){Object.defineProperty(r,e,Object.getOwnPropertyDescriptor(t,e))})}return r}function d(e,r,t){return r in e?Object.defineProperty(e,r,{value:t,enumerable:!0,configurable:!0,writable:!0}):e[r]=t,e}function x(e,r){for(var t=0;t<r.length;t++){var n=r[t];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}var g=function(){function i(e){var r=e.unaryOps,t=e.binaryOps,n=e.literals;!function(e,r){if(!(e instanceof r))throw new TypeError("Cannot call a class as a function")}(this,i),this.maxBinaryLen=1,this.maxUnary=1,this.binaryOps=v({},a),this.unaryOps=v({},s),this.literals=v({},u),t&&Object.keys(t).length&&(this.binaryOps=v({},t)),r&&r.length&&(this.unaryOps=v({},f(r))),n&&Object.keys(n).length&&(this.literals=v({},n)),this.maxBinaryLen=this.getMaxBinaryLen(),this.maxUnary=this.getMaxUnaryLen()}return function(e,r,t){r&&x(e.prototype,r),t&&x(e,t)}(i,[{key:"getMaxBinaryLen",value:function(){return Object.keys(this.binaryOps).reduce(function(e,r){return r.length>e?r.length:e},1)}},{key:"getMaxUnaryLen",value:function(){return Object.keys(this.unaryOps).reduce(function(e,r){return r.length>e?r.length:e},1)}},{key:"addBinaryOps",value:function(e){var r=0<arguments.length&&void 0!==e?e:{};return this.binaryOps=v({},this.binaryOps,{},r),this.maxBinaryLen=this.getMaxBinaryLen(),this}},{key:"addUnaryOps",value:function(e){var r=0<arguments.length&&void 0!==e?e:[];return this.unaryOps=v({},this.unaryOps,{},f(r)),this.maxUnary=this.getMaxUnaryLen(),this}},{key:"addLiterals",value:function(e){var r=0<arguments.length&&void 0!==e?e:{};return this.literals=v({},this.literals,{},r),this}},{key:"removeUnaryOps",value:function(e){var r=0<arguments.length&&void 0!==e?e:[];return n(this.unaryOps,r),this.maxUnary=this.getMaxUnaryLen(),this}},{key:"removeBinaryOps",value:function(e){var r=0<arguments.length&&void 0!==e?e:[];return n(this.binaryOps,r),this.maxBinaryLen=this.getMaxBinaryLen(),this}},{key:"removeLiterals",value:function(e){var r=0<arguments.length&&void 0!==e?e:[];return n(this.literals,r),this}},{key:"getUnaryOps",value:function(){return Object.keys(this.unaryOps)}},{key:"getBinaryOps",value:function(){return v({},this.binaryOps)}},{key:"getLiterals",value:function(){return v({},this.literals)}}]),i}();function b(e){return(b="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e})(e)}function O(e,r){for(var t=0;t<r.length;t++){var n=r[t];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}function C(e,r){return!r||"object"!==b(r)&&"function"!=typeof r?function(e){if(void 0!==e)return e;throw new ReferenceError("this hasn't been initialised - super() hasn't been called")}(e):r}function m(e){return(m=Object.setPrototypeOf?Object.getPrototypeOf:function(e){return e.__proto__||Object.getPrototypeOf(e)})(e)}function k(e,r){return(k=Object.setPrototypeOf||function(e,r){return e.__proto__=r,e})(e,r)}t.d(r,"ExpressionParse",function(){return j});var j=function(){function n(e){var r;!function(e,r){if(!(e instanceof r))throw new TypeError("Cannot call a class as a function")}(this,n),(r=C(this,m(n).call(this,e))).expression="",r.index=0;var t=e.expression;return r.expression=t,r}return function(e,r){if("function"!=typeof r&&null!==r)throw new TypeError("Super expression must either be null or a function");e.prototype=Object.create(r&&r.prototype,{constructor:{value:e,writable:!0,configurable:!0}}),r&&k(e,r)}(n,g),function(e,r,t){r&&O(e.prototype,r),t&&O(e,t)}(n,[{key:"error",value:function(e,r){var t=0<arguments.length&&void 0!==e?e:"Unexpected ".concat(this.getCurrentChar()),n=1<arguments.length?r:void 0;throw new Error("".concat(t," at character ").concat(n||this.index))}},{key:"getCurrentChar",value:function(){return this.expression[this.index]}},{key:"jumpOverSpace",value:function(){for(var e=/\s/;this.index<this.expression.length;){var r=this.getCurrentChar();if(!r||!e.test(r))return;this.index++}}},{key:"isIdentifierStart",value:function(e){return!!e&&/[\$_A-Za-z]/.test(e)}},{key:"isIdentifierPart",value:function(e){return!!e&&/[\$_A-Za-z0-9]/.test(e)}},{key:"getAst",value:function(){this.index=0;for(var e=[this.parseExpression()];this.index<this.expression.length;){this.jumpOverSpace(),";"===this.getCurrentChar()&&this.index++;var r=this.parseExpression();e.push(r)}return 1<e.length?e:e[0]}},{key:"parseExpression",value:function(){if(!this.expression)return null;var e=this.parseBinaryExpression();if(this.jumpOverSpace(),"?"!==this.getCurrentChar())return e;this.index++;var r=this.parseExpression();r||this.error("Expected Expression"),":"!==this.getCurrentChar()&&this.error("Expected ".concat(":")),this.index++;var t=this.parseExpression();return t||this.error("Expected Expression"),{type:"ConditionalExpression",test:e,consequent:r,alternate:t}}},{key:"parseBinaryExpression",value:function(){var e=this.parseToken(),r=this.parseBinaryOperator();if(!r)return e;var t=this.parseToken();r&&!t&&this.error();for(var n=[e,t],i=[r],s=function(){var e=i.pop(),r=n.pop(),t={type:"BinaryExpression",left:n.pop(),operator:e,right:r};n.push(t)},a=null;a=this.parseBinaryOperator();){for(;i[i.length-1]&&this.binaryOps[i[i.length-1].value]>=this.binaryOps[a.value];)s();i.push(a),n.push(this.parseToken())}for(;i.length;)s();return n[0]}},{key:"parseBinaryOperator",value:function(){this.jumpOverSpace();for(var e=this.maxBinaryLen,r=this.index;0<e;){var t=this.expression.slice(this.index,this.index+e);if(!t)return null;if(this.binaryOps.hasOwnProperty(t))return this.index+=e,{type:"BinaryOperator",value:t,start:r,end:this.index};e--}return null}},{key:"parseToken",value:function(){if(this.jumpOverSpace(),!this.getCurrentChar())return null;var e=this.parseUnary()||this.parseVariable()||this.parseNumber()||this.parseString()||this.parseArray();return e||this.error(),e}},{key:"parseUnary",value:function(){for(var e=this.maxUnary,r=this.index;0<e;){var t=this.expression.slice(this.index,this.index+e);if(!t)return null;if(this.unaryOps.hasOwnProperty(t))return this.index+=e,{type:"UnaryExpression",operate:{type:"UnaryOperator",value:t,start:r,end:this.index},argument:this.parseToken()};e--}return null}},{key:"parseNumber",value:function(){var e="",r=this.index,t=!1;for(this.getCurrentChar()===i&&(t=!0,e+=this.getCurrentChar(),this.index++);this.getCurrentChar()&&/^([\de\.])/.test(this.getCurrentChar());)e+=this.getCurrentChar(),this.getCurrentChar()===i&&(t&&this.error(),t=!0),this.index++;return e?(this.isIdentifierStart(this.getCurrentChar())&&this.error("Variable cannot start with number",r),{type:c,value:parseFloat(e),start:r,end:this.index,raw:e}):null}},{key:"parseString",value:function(){var e="",r=!1,t=this.getCurrentChar(),n=this.index;if("'"!==t&&'"'!==t)return null;for(;this.index<this.expression.length;){this.index++;var i=this.getCurrentChar();if(i===t){r=!0;break}if("\\"===i)switch(this.index++,this.getCurrentChar()){case"n":e+="\n";break;case"r":e+="\r";break;case"t":e+="\t";break;case"b":e+="\b";break;case"f":e+="\f";break;case"v":e+="\v";break;default:e+=this.getCurrentChar()}else e+=i}return this.index++,r||this.error("Unclosed quote after \"'".concat(e,"'\"")),{type:c,value:e,start:n,end:this.index,raw:"".concat(t).concat(e).concat(t)}}},{key:"parseArguments",value:function(){for(var e=[];this.index<this.expression.length;){this.jumpOverSpace();var r=this.getCurrentChar();if(r===h||r===p)break;var t=this.parseExpression();this.jumpOverSpace();var n=this.getCurrentChar();if(n===h||n===p){e.push(t);break}","===n&&t&&e.push(t),this.index++}return e}},{key:"parseArray",value:function(){if(this.getCurrentChar()===o){this.index++;var e=this.parseArguments();if(this.jumpOverSpace(),this.getCurrentChar()===h)return this.index++,{type:"ArrayExpression",arguments:e};this.error("Expected ".concat(h))}return null}},{key:"parseVariable",value:function(){return this.parseGroup()||this.parseObject()}},{key:"parseGroup",value:function(){if("("===this.getCurrentChar()){this.index++,this.jumpOverSpace();var e=this.parseExpression();if(this.jumpOverSpace(),this.getCurrentChar()===p)return this.index++,e;this.error("Expected ".concat(p))}return null}},{key:"parseObject",value:function(){var e=this.parseLiteral();if(!e)return null;if("("===this.getCurrentChar()){this.index++,this.jumpOverSpace();var r=this.parseArguments();this.jumpOverSpace(),this.getCurrentChar()===p?(this.index++,e={type:"CallExpression",callee:e,arguments:r}):this.error("Expected ".concat(p))}if(this.getCurrentChar()!==i&&this.getCurrentChar()!==o)return e;for(;this.getCurrentChar()===i||this.getCurrentChar()===o;)if(this.getCurrentChar()===i){this.index++;var t=this.parseLiteral();e={type:l,computed:!1,object:e,property:t}}else if(this.getCurrentChar()===o){this.index++;var n=this.parseExpression();this.jumpOverSpace(),this.getCurrentChar()===h?(this.index++,e={type:l,computed:!0,object:e,property:n}):this.error("Expected ".concat(h))}return e}},{key:"parseLiteral",value:function(){this.jumpOverSpace();var e=this.index,r=this.getCurrentChar();if(this.isIdentifierStart(this.getCurrentChar())){for(this.index++;this.getCurrentChar()&&this.isIdentifierPart(this.getCurrentChar());)r+=this.getCurrentChar(),this.index++;return this.literals.hasOwnProperty(r)?{type:c,start:e,end:this.index,value:this.literals[r],raw:r}:{type:"Identifier",start:e,end:this.index,name:r}}return null}}]),n}();j.version="1.0.2";var E=new j({expression:"empty(getxx(1,xx,dd),haha(),$ab)"});console.log(JSON.stringify(E.getAst()))}],i.c=n,i.d=function(e,r,t){i.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:t})},i.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},i.t=function(r,e){if(1&e&&(r=i(r)),8&e)return r;if(4&e&&"object"==typeof r&&r&&r.__esModule)return r;var t=Object.create(null);if(i.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:r}),2&e&&"string"!=typeof r)for(var n in r)i.d(t,n,function(e){return r[e]}.bind(null,n));return t},i.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return i.d(r,"a",r),r},i.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},i.p="/",i(i.s=0);function i(e){if(n[e])return n[e].exports;var r=n[e]={i:e,l:!1,exports:{}};return t[e].call(r.exports,r,r.exports,i),r.l=!0,r.exports}var t,n});
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "/";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+
+// CONCATENATED MODULE: ./src/data/index.ts
+var UNARY_OPS = {
+  "!": true,
+  "-": true,
+  "+": true
+};
+var BINARY_OPS = {
+  "||": 1,
+  "&&": 2,
+  "|": 3,
+  "^": 4,
+  "&": 5,
+  "==": 6,
+  "!=": 6,
+  "===": 6,
+  "!==": 6,
+  "<": 7,
+  ">": 7,
+  "<=": 7,
+  ">=": 7,
+  "<<": 8,
+  ">>": 8,
+  "+": 9,
+  "-": 9,
+  "*": 10,
+  "/": 10,
+  "%": 10
+};
+var LITERALS = {
+  undefined: undefined,
+  "null": null,
+  "false": false,
+  "true": true
+};
+var DOT = ".";
+var QUESTION = "?";
+var COLON = ":";
+var SINGLE_QUOTE_MARK = "'";
+var DOUBLE_QUOTE_MARK = "\"";
+var LEFT_BRACKET = "[";
+var RIGHT_BRACKET = "]";
+var COMMA = ",";
+var LEFT_PAREN = "(";
+var RIGHT_PAREN = ")";
+var SEMICOLON = ";"; //expression Type
+
+var CONDITIONAL_EXPRESSION = "ConditionalExpression";
+var UNARY_EXPRESSION = "UnaryExpression";
+var BINARY_EXPRESSION = "BinaryExpression";
+var BINARY_OPERATOR = "BinaryOperator";
+var UNARY_OPERATOR = "UnaryOperator";
+var LITERAL = "Literal";
+var IDENTIFIER = "Identifier";
+var ARRAY_EXPRESSION = "ArrayExpression";
+var MEMBER_EXPRESSION = "MemberExpression";
+var CALL_EXPRESSION = "CallExpression";
+// CONCATENATED MODULE: ./src/utils/index.ts
+function transFormArrToObj(arr) {
+  return arr.reduce(function (result, op) {
+    if (typeof op === "string" || typeof op === "number") {
+      result[op] = true;
+    }
+
+    return result;
+  }, {});
+}
+function deleteProperty(data, proArr) {
+  proArr.forEach(function (key) {
+    delete data[key];
+  });
+
+  if (Array.isArray(data)) {
+    return data.filter(function (_) {
+      return _;
+    }); //filter empty
+  }
+
+  return data;
+}
+// CONCATENATED MODULE: ./src/operator.ts
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+var operator_Operator =
+/*#__PURE__*/
+function () {
+  function Operator(_ref) {
+    var unaryOps = _ref.unaryOps,
+        binaryOps = _ref.binaryOps,
+        literals = _ref.literals;
+
+    _classCallCheck(this, Operator);
+
+    this.maxBinaryLen = 1;
+    this.maxUnary = 1;
+    this.binaryOps = _objectSpread({}, BINARY_OPS);
+    this.unaryOps = _objectSpread({}, UNARY_OPS);
+    this.literals = _objectSpread({}, LITERALS);
+
+    if (binaryOps && Object.keys(binaryOps).length) {
+      this.binaryOps = _objectSpread({}, binaryOps);
+    }
+
+    if (unaryOps && unaryOps.length) {
+      this.unaryOps = _objectSpread({}, transFormArrToObj(unaryOps));
+    }
+
+    if (literals && Object.keys(literals).length) {
+      this.literals = _objectSpread({}, literals);
+    }
+
+    this.maxBinaryLen = this.getMaxBinaryLen();
+    this.maxUnary = this.getMaxUnaryLen();
+  }
+
+  _createClass(Operator, [{
+    key: "getMaxBinaryLen",
+    value: function getMaxBinaryLen() {
+      return Object.keys(this.binaryOps).reduce(function (max, op) {
+        return op.length > max ? op.length : max;
+      }, 1);
+    }
+  }, {
+    key: "getMaxUnaryLen",
+    value: function getMaxUnaryLen() {
+      return Object.keys(this.unaryOps).reduce(function (max, op) {
+        return op.length > max ? op.length : max;
+      }, 1);
+    }
+  }, {
+    key: "addBinaryOps",
+    value: function addBinaryOps() {
+      var ops = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      this.binaryOps = _objectSpread({}, this.binaryOps, {}, ops);
+      this.maxBinaryLen = this.getMaxBinaryLen();
+      return this;
+    }
+  }, {
+    key: "addUnaryOps",
+    value: function addUnaryOps() {
+      var ops = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      this.unaryOps = _objectSpread({}, this.unaryOps, {}, transFormArrToObj(ops));
+      this.maxUnary = this.getMaxUnaryLen();
+      return this;
+    }
+  }, {
+    key: "addLiterals",
+    value: function addLiterals() {
+      var ops = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      this.literals = _objectSpread({}, this.literals, {}, ops);
+      return this;
+    }
+  }, {
+    key: "removeUnaryOps",
+    value: function removeUnaryOps() {
+      var ops = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      deleteProperty(this.unaryOps, ops);
+      this.maxUnary = this.getMaxUnaryLen();
+      return this;
+    }
+  }, {
+    key: "removeBinaryOps",
+    value: function removeBinaryOps() {
+      var ops = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      deleteProperty(this.binaryOps, ops);
+      this.maxBinaryLen = this.getMaxBinaryLen();
+      return this;
+    }
+  }, {
+    key: "removeLiterals",
+    value: function removeLiterals() {
+      var ops = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      deleteProperty(this.literals, ops);
+      return this;
+    }
+  }, {
+    key: "getUnaryOps",
+    value: function getUnaryOps() {
+      return Object.keys(this.unaryOps);
+    }
+  }, {
+    key: "getBinaryOps",
+    value: function getBinaryOps() {
+      return _objectSpread({}, this.binaryOps);
+    }
+  }, {
+    key: "getLiterals",
+    value: function getLiterals() {
+      return _objectSpread({}, this.literals);
+    }
+  }]);
+
+  return Operator;
+}();
+
+
+// CONCATENATED MODULE: ./src/index.ts
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ExpressionParse", function() { return src_ExpressionParse; });
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function src_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function src_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function src_createClass(Constructor, protoProps, staticProps) { if (protoProps) src_defineProperties(Constructor.prototype, protoProps); if (staticProps) src_defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+// Expression-> BinaryExpression{?Expression:Expression}
+
+
+var src_ExpressionParse =
+/*#__PURE__*/
+function (_Operator) {
+  _inherits(ExpressionParse, _Operator);
+
+  function ExpressionParse(args) {
+    var _this;
+
+    src_classCallCheck(this, ExpressionParse);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ExpressionParse).call(this, args));
+    _this.expression = "";
+    _this.index = 0;
+    var expression = args.expression;
+    _this.expression = expression;
+    return _this;
+  }
+
+  src_createClass(ExpressionParse, [{
+    key: "error",
+    value: function error() {
+      var msg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "Unexpected ".concat(this.getCurrentChar());
+      var index = arguments.length > 1 ? arguments[1] : undefined;
+      var err = new Error("".concat(msg, " at character ").concat(index || this.index));
+      throw err;
+    }
+  }, {
+    key: "getCurrentChar",
+    value: function getCurrentChar() {
+      return this.expression[this.index];
+    }
+  }, {
+    key: "jumpOverSpace",
+    value: function jumpOverSpace() {
+      var spaceReg = /\s/;
+
+      while (this.index < this.expression.length) {
+        var _char = this.getCurrentChar();
+
+        if (!_char || !spaceReg.test(_char)) {
+          return;
+        }
+
+        this.index++;
+      }
+    }
+  }, {
+    key: "isIdentifierStart",
+    value: function isIdentifierStart(_char2) {
+      return _char2 ? /[\$_A-Za-z]/.test(_char2) : false;
+    }
+  }, {
+    key: "isIdentifierPart",
+    value: function isIdentifierPart(_char3) {
+      return _char3 ? /[\$_A-Za-z0-9]/.test(_char3) : false;
+    }
+  }, {
+    key: "getAst",
+    value: function getAst() {
+      this.index = 0;
+      var result = [this.parseExpression()];
+
+      while (this.index < this.expression.length) {
+        this.jumpOverSpace();
+
+        if (this.getCurrentChar() === SEMICOLON) {
+          this.index++;
+        }
+
+        var expression = this.parseExpression();
+        result.push(expression);
+      }
+
+      return result.length > 1 ? result : result[0];
+    }
+  }, {
+    key: "parseExpression",
+    value: function parseExpression() {
+      if (!this.expression) {
+        return null;
+      }
+
+      var expression = this.parseBinaryExpression();
+      this.jumpOverSpace();
+
+      if (this.getCurrentChar() === QUESTION) {
+        this.index++;
+        var consequent = this.parseExpression();
+
+        if (!consequent) {
+          this.error("Expected Expression");
+        }
+
+        if (this.getCurrentChar() !== COLON) {
+          this.error("Expected ".concat(COLON));
+        }
+
+        this.index++;
+        var alternate = this.parseExpression();
+
+        if (!alternate) {
+          this.error("Expected Expression");
+        }
+
+        var ast = {
+          type: CONDITIONAL_EXPRESSION,
+          test: expression,
+          consequent: consequent,
+          alternate: alternate
+        };
+        return ast;
+      }
+
+      return expression;
+    }
+  }, {
+    key: "parseBinaryExpression",
+    value: function parseBinaryExpression() {
+      var left = this.parseToken();
+      var operator = this.parseBinaryOperator();
+
+      if (!operator) {
+        return left;
+      }
+
+      var right = this.parseToken();
+
+      if (operator && !right) {
+        this.error();
+      } //operate priority
+
+
+      var tokenQueue = [left, right];
+      var operatorQueue = [operator];
+
+      var setToken = function setToken() {
+        var op = operatorQueue.pop();
+        var right = tokenQueue.pop();
+        var left = tokenQueue.pop();
+        var node = {
+          type: BINARY_EXPRESSION,
+          left: left,
+          operator: op,
+          right: right
+        };
+        tokenQueue.push(node);
+      };
+
+      var _opt = null;
+
+      while (_opt = this.parseBinaryOperator()) {
+        while (operatorQueue[operatorQueue.length - 1] && this.binaryOps[operatorQueue[operatorQueue.length - 1].value] >= this.binaryOps[_opt.value]) {
+          setToken();
+        }
+
+        operatorQueue.push(_opt);
+        var token = this.parseToken();
+
+        if (!token) {
+          this.error();
+        }
+
+        tokenQueue.push(token);
+      }
+
+      while (operatorQueue.length) {
+        setToken();
+      }
+
+      return tokenQueue[0];
+    }
+  }, {
+    key: "parseBinaryOperator",
+    value: function parseBinaryOperator() {
+      this.jumpOverSpace();
+      var max = this.maxBinaryLen;
+      var start = this.index;
+
+      while (max > 0) {
+        var str = this.expression.slice(this.index, this.index + max);
+
+        if (!str) {
+          return null;
+        }
+
+        if (this.binaryOps.hasOwnProperty(str)) {
+          this.index += max;
+          return {
+            type: BINARY_OPERATOR,
+            value: str,
+            start: start,
+            end: this.index
+          };
+        }
+
+        max--;
+      }
+
+      return null;
+    }
+  }, {
+    key: "parseToken",
+    value: function parseToken() {
+      this.jumpOverSpace();
+
+      var _char4 = this.getCurrentChar();
+
+      if (!_char4) {
+        return null;
+      }
+
+      var ast = this.parseUnary() || this.parseVariable() || this.parseNumber() || this.parseString() || this.parseArray();
+
+      if (!ast) {
+        this.error();
+      }
+
+      return ast;
+    }
+  }, {
+    key: "parseUnary",
+    value: function parseUnary() {
+      var max = this.maxUnary;
+      var start = this.index;
+
+      while (max > 0) {
+        var str = this.expression.slice(this.index, this.index + max);
+
+        if (!str) {
+          return null;
+        }
+
+        if (this.unaryOps.hasOwnProperty(str)) {
+          this.index += max;
+          var end = this.index;
+          var argument = this.parseToken();
+          return {
+            type: UNARY_EXPRESSION,
+            operate: {
+              type: UNARY_OPERATOR,
+              value: str,
+              start: start,
+              end: end
+            },
+            argument: argument
+          };
+        }
+
+        max--;
+      }
+
+      return null;
+    }
+  }, {
+    key: "parseNumber",
+    value: function parseNumber() {
+      var number = "";
+      var start = this.index;
+      var firstDot = false;
+
+      if (this.getCurrentChar() === DOT) {
+        firstDot = true;
+        number += this.getCurrentChar();
+        this.index++;
+      }
+
+      while (this.getCurrentChar() && /^([\de\.])/.test(this.getCurrentChar())) {
+        number += this.getCurrentChar();
+
+        if (this.getCurrentChar() === DOT) {
+          if (firstDot) {
+            this.error();
+          }
+
+          firstDot = true;
+        }
+
+        this.index++;
+      }
+
+      if (!number) {
+        return null;
+      }
+
+      if (this.isIdentifierStart(this.getCurrentChar())) {
+        this.error("Variable cannot start with number", start);
+      }
+
+      return {
+        type: LITERAL,
+        value: parseFloat(number),
+        start: start,
+        end: this.index,
+        raw: number
+      };
+    }
+  }, {
+    key: "parseString",
+    value: function parseString() {
+      var str = "",
+          closed = false;
+      var quote = this.getCurrentChar();
+      var start = this.index;
+
+      if (quote !== SINGLE_QUOTE_MARK && quote !== DOUBLE_QUOTE_MARK) {
+        return null;
+      }
+
+      while (this.index < this.expression.length) {
+        this.index++;
+
+        var _char5 = this.getCurrentChar();
+
+        if (_char5 === quote) {
+          closed = true;
+          break;
+        } else if (_char5 === "\\") {
+          this.index++;
+
+          switch (this.getCurrentChar()) {
+            case "n":
+              str += "\n";
+              break;
+
+            case "r":
+              str += "\r";
+              break;
+
+            case "t":
+              str += "\t";
+              break;
+
+            case "b":
+              str += "\b";
+              break;
+
+            case "f":
+              str += "\f";
+              break;
+
+            case "v":
+              str += "\x0B";
+              break;
+
+            default:
+              str += this.getCurrentChar();
+          }
+        } else {
+          str += _char5;
+        }
+      }
+
+      this.index++;
+
+      if (!closed) {
+        this.error("Unclosed quote after \"'".concat(str, "'\""));
+      }
+
+      return {
+        type: LITERAL,
+        value: str,
+        start: start,
+        end: this.index,
+        raw: "".concat(quote).concat(str).concat(quote)
+      };
+    }
+  }, {
+    key: "parseArguments",
+    value: function parseArguments() {
+      var args = [];
+
+      while (this.index < this.expression.length) {
+        this.jumpOverSpace();
+
+        var _comma = this.getCurrentChar();
+
+        if (_comma === RIGHT_BRACKET || _comma === RIGHT_PAREN) {
+          break;
+        }
+
+        var arg = this.parseExpression();
+        this.jumpOverSpace();
+        var comma = this.getCurrentChar();
+
+        if (comma === RIGHT_BRACKET || comma === RIGHT_PAREN) {
+          args.push(arg);
+          break;
+        }
+
+        if (comma === COMMA) {
+          if (arg) {
+            args.push(arg);
+          }
+        }
+
+        this.index++;
+      }
+
+      return args;
+    }
+  }, {
+    key: "parseArray",
+    value: function parseArray() {
+      if (this.getCurrentChar() === LEFT_BRACKET) {
+        this.index++;
+        var arg = this.parseArguments();
+        this.jumpOverSpace();
+
+        if (this.getCurrentChar() === RIGHT_BRACKET) {
+          this.index++;
+          return {
+            type: ARRAY_EXPRESSION,
+            arguments: arg
+          };
+        } else {
+          this.error("Expected ".concat(RIGHT_BRACKET));
+        }
+      }
+
+      return null;
+    }
+  }, {
+    key: "parseVariable",
+    value: function parseVariable() {
+      return this.parseGroup() || this.parseObject();
+    }
+  }, {
+    key: "parseGroup",
+    value: function parseGroup() {
+      if (this.getCurrentChar() === LEFT_PAREN) {
+        this.index++;
+        this.jumpOverSpace();
+        var expression = this.parseExpression();
+        this.jumpOverSpace();
+
+        if (this.getCurrentChar() === RIGHT_PAREN) {
+          this.index++;
+          return expression;
+        } else {
+          this.error("Expected ".concat(RIGHT_PAREN));
+        }
+      }
+
+      return null;
+    }
+  }, {
+    key: "parseObject",
+    value: function parseObject() {
+      var obj = this.parseLiteral();
+
+      if (!obj) {
+        return null;
+      }
+
+      if (this.getCurrentChar() === LEFT_PAREN) {
+        this.index++;
+        this.jumpOverSpace();
+        var args = this.parseArguments();
+        this.jumpOverSpace();
+
+        if (this.getCurrentChar() === RIGHT_PAREN) {
+          this.index++;
+          obj = {
+            type: CALL_EXPRESSION,
+            callee: obj,
+            arguments: args
+          };
+        } else {
+          this.error("Expected ".concat(RIGHT_PAREN));
+        }
+      }
+
+      if (this.getCurrentChar() !== DOT && this.getCurrentChar() !== LEFT_BRACKET) {
+        return obj;
+      }
+
+      while (this.getCurrentChar() === DOT || this.getCurrentChar() === LEFT_BRACKET) {
+        if (this.getCurrentChar() === DOT) {
+          this.index++;
+          var property = this.parseLiteral();
+          obj = {
+            type: MEMBER_EXPRESSION,
+            computed: false,
+            object: obj,
+            property: property
+          };
+        } else if (this.getCurrentChar() === LEFT_BRACKET) {
+          this.index++;
+
+          var _property = this.parseExpression();
+
+          this.jumpOverSpace();
+
+          if (this.getCurrentChar() === RIGHT_BRACKET) {
+            this.index++;
+            obj = {
+              type: MEMBER_EXPRESSION,
+              computed: true,
+              object: obj,
+              property: _property
+            };
+          } else {
+            this.error("Expected ".concat(RIGHT_BRACKET));
+          }
+        }
+      }
+
+      return obj;
+    }
+  }, {
+    key: "parseLiteral",
+    value: function parseLiteral() {
+      this.jumpOverSpace();
+      var start = this.index;
+      var str = this.getCurrentChar();
+
+      if (this.isIdentifierStart(this.getCurrentChar())) {
+        this.index++;
+
+        while (this.getCurrentChar() && this.isIdentifierPart(this.getCurrentChar())) {
+          str += this.getCurrentChar();
+          this.index++;
+        }
+
+        if (this.literals.hasOwnProperty(str)) {
+          return {
+            type: LITERAL,
+            start: start,
+            end: this.index,
+            value: this.literals[str],
+            raw: str
+          };
+        } else {
+          return {
+            type: IDENTIFIER,
+            start: start,
+            end: this.index,
+            name: str
+          };
+        }
+      }
+
+      return null;
+    }
+  }]);
+
+  return ExpressionParse;
+}(operator_Operator);
+src_ExpressionParse.version = "1.0.2";
+
+/***/ })
+/******/ ]);
+});
