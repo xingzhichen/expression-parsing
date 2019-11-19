@@ -2,7 +2,7 @@
 
 // BinaryExpression->Token(BinaryOperator Token)*  //此处做二元操作符的优先级处理
 
-// Token-> Unary| Variable|Numeric | String|Array
+// Token-> Unary| Object|Numeric | String|Array
 // Literal-> true|false|null|undefined |Identifier
 
 // Unary-> UnaryOperator Token
@@ -13,11 +13,11 @@
 
 // Array->'['Arguments']'
 
-// Variable-> Group| Object
+// Variable-> Group| Literal
 
 // Group->'('Expression ')'
 
-// Object->Object'.'Literal| Variable'['Expression']'|Literal'('Arguments|ε')'|Literal
+// Object->Variable(.'Literal)*| Variable('['Expression']')*|Variable'('Arguments?')'
 
 // Identifier->/^[\$_A-Za-z]([\$_A-Za-z0-9]*)/
 
@@ -189,7 +189,7 @@ export class ExpressionParse extends Operator {
     }
     const ast =
       this.parseUnary() ||
-      this.parseVariable() ||
+      this.parseObject() ||
       this.parseNumber() ||
       this.parseString() ||
       this.parseArray();
@@ -358,7 +358,7 @@ export class ExpressionParse extends Operator {
   }
 
   private parseVariable(): AS.Variable {
-    return this.parseGroup() || this.parseObject();
+    return this.parseGroup() || this.parseLiteral();
   }
   private parseGroup(): AS.Expression {
     if (this.getCurrentChar() === D.LEFT_PAREN) {
@@ -376,7 +376,7 @@ export class ExpressionParse extends Operator {
     return null;
   }
   private parseObject(): AS.Object {
-    let obj: AS.Object = this.parseLiteral();
+    let obj: AS.Object = this.parseVariable();
     if (!obj) {
       return null;
     }

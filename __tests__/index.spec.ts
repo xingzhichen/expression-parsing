@@ -175,6 +175,83 @@ test("function", () => {
   };
   expect(instance.getAst()).toEqual(expectAst);
 });
+describe("object", () => {
+  test("computed true", () => {
+    const instance = new ExpressionParse({
+      expression: "a.b[c.d]"
+    });
+    const expectAst = {
+      type: "MemberExpression",
+      computed: true,
+      object: {
+        type: "MemberExpression",
+        computed: false,
+        object: {
+          type: "Identifier",
+          start: 0,
+          end: 1,
+          name: "a"
+        },
+        property: {
+          type: "Identifier",
+          start: 2,
+          end: 3,
+          name: "b"
+        }
+      },
+      property: {
+        type: "MemberExpression",
+        computed: false,
+        object: {
+          type: "Identifier",
+          start: 4,
+          end: 5,
+          name: "c"
+        },
+        property: {
+          type: "Identifier",
+          start: 6,
+          end: 7,
+          name: "d"
+        }
+      }
+    };
+    expect(instance.getAst()).toEqual(expectAst);
+  });
+  test("computed false", () => {
+    const instance = new ExpressionParse({
+      expression: "a.b.c"
+    });
+    const expectAst = {
+      type: "MemberExpression",
+      computed: false,
+      object: {
+        type: "MemberExpression",
+        computed: false,
+        object: {
+          type: "Identifier",
+          start: 0,
+          end: 1,
+          name: "a"
+        },
+        property: {
+          type: "Identifier",
+          start: 2,
+          end: 3,
+          name: "b"
+        }
+      },
+      property: {
+        type: "Identifier",
+        start: 4,
+        end: 5,
+        name: "c"
+      }
+    };
+    expect(instance.getAst()).toEqual(expectAst);
+  });
+});
+
 test("Binary expression parsing error", () => {
   const instance = new ExpressionParse({
     expression: "a+"
