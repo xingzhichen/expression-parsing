@@ -12,7 +12,7 @@ export module AstType {
     right: Token | BinaryExpression;
     operator: BinaryOperator;
   } | null;
-  type Token = UnaryExpression | Variable | Number | String | Arr | null;
+  type Token = UnaryExpression | Object | Number | String | Arr | null;
   type BinaryOperator = {
     type: string;
     value: string;
@@ -29,7 +29,7 @@ export module AstType {
     };
     argument: Token;
   } | null;
-  type Variable = Object | Expression | null;
+  type Variable = Object | Literal | null;
   type Number = {
     type: string;
     value: number;
@@ -53,7 +53,7 @@ export module AstType {
     | {
         type: string;
         computed: boolean;
-        object: Object | Literal;
+        object: Variable | Object;
         property: Literal | Expression;
       }
     | Function
@@ -61,11 +61,11 @@ export module AstType {
     | null;
   type Function = {
     type: string;
-    callee: Literal;
+    callee: Variable;
     arguments: Arguments;
   } | null;
   type Literal =
-    | {
+    | ({
         type: string;
         start: number;
         end: number;
@@ -76,6 +76,7 @@ export module AstType {
           }
         | {
             name?: string;
-          })
+          }
+      ))
     | null;
 }
